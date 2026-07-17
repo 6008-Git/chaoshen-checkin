@@ -236,6 +236,172 @@ body{
     font-size: 13px;
     color: #6688aa;
 }
+
+/* 签到成功弹窗 */
+.success-modal{
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: fadeIn 0.3s ease;
+}
+.success-modal.show{
+    display: flex;
+}
+@keyframes fadeIn{
+    from{ opacity: 0; }
+    to{ opacity: 1; }
+}
+.success-box{
+    background: linear-gradient(145deg, #1a2a4a, #0d1a30);
+    border: 2px solid #00ffaa;
+    border-radius: 20px;
+    padding: 40px 30px;
+    text-align: center;
+    box-shadow: 0 0 60px #00ffaa55, 0 0 100px #00aaff33;
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+}
+@keyframes popIn{
+    0%{ transform: scale(0.5); opacity: 0; }
+    100%{ transform: scale(1); opacity: 1; }
+}
+.success-icon{
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    background: linear-gradient(135deg, #00ff88, #00ccff);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: pulse 1s infinite, rotateGlow 2s infinite linear;
+    box-shadow: 0 0 30px #00ffaa;
+}
+@keyframes pulse{
+    0%, 100%{ transform: scale(1); }
+    50%{ transform: scale(1.1); }
+}
+@keyframes rotateGlow{
+    0%{ box-shadow: 0 0 30px #00ffaa, 0 0 60px #00aaff; }
+    50%{ box-shadow: 0 0 50px #00ffcc, 0 0 80px #00ccff; }
+    100%{ box-shadow: 0 0 30px #00ffaa, 0 0 60px #00aaff; }
+}
+.success-icon svg{
+    width: 45px;
+    height: 45px;
+    stroke: white;
+    stroke-width: 3;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    animation: drawCheck 0.5s ease 0.3s forwards;
+    stroke-dasharray: 50;
+    stroke-dashoffset: 50;
+}
+@keyframes drawCheck{
+    to{ stroke-dashoffset: 0; }
+}
+.success-title{
+    font-size: 28px;
+    font-weight: 900;
+    color: #00ffaa;
+    text-shadow: 0 0 20px #00ffaa;
+    margin-bottom: 10px;
+    animation: glowText 1.5s infinite alternate;
+}
+@keyframes glowText{
+    from{ text-shadow: 0 0 10px #00ffaa, 0 0 20px #00ffaa; }
+    to{ text-shadow: 0 0 20px #00ffcc, 0 0 40px #00ffaa, 0 0 60px #00aaff; }
+}
+.success-date{
+    font-size: 16px;
+    color: #88ccff;
+    margin-bottom: 15px;
+}
+.success-msg{
+    font-size: 14px;
+    color: #aabbcc;
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+.success-close-btn{
+    padding: 12px 40px;
+    background: linear-gradient(135deg, #00ff88, #00ccff);
+    border: none;
+    border-radius: 25px;
+    color: #001a22;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 4px 15px #00ffaa55;
+}
+.success-close-btn:hover{
+    transform: scale(1.05);
+    box-shadow: 0 6px 25px #00ffaa;
+}
+
+/* 粒子效果 */
+.particle{
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    animation: particleFly 1s ease-out forwards;
+}
+@keyframes particleFly{
+    0%{ transform: translate(0, 0) scale(1); opacity: 1; }
+    100%{ transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+}
+
+/* 星星闪烁 */
+.stars{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+}
+.star{
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #fff;
+    border-radius: 50%;
+    animation: twinkle 1s infinite;
+}
+@keyframes twinkle{
+    0%, 100%{ opacity: 0.3; transform: scale(1); }
+    50%{ opacity: 1; transform: scale(1.5); }
+}
+
+/* 取消签到的提示 */
+.cancel-modal .success-box{
+    border-color: #ff6b6b;
+    box-shadow: 0 0 60px #ff6b6b55;
+}
+.cancel-modal .success-icon{
+    background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+    box-shadow: 0 0 30px #ff6b6b;
+}
+.cancel-modal .success-title{
+    color: #ff6b6b;
+    text-shadow: 0 0 20px #ff6b6b;
+}
+.cancel-modal .success-close-btn{
+    background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+    box-shadow: 0 4px 15px #ff6b6b55;
+}
 </style>
 </head>
 <body>
@@ -269,6 +435,22 @@ body{
 </div>
 
 <p class="tip-text">所有签到、任务数据自动保存在本地浏览器</p>
+
+<!-- 签到成功弹窗 -->
+<div class="success-modal" id="successModal">
+    <div class="success-box">
+        <div class="stars" id="starsContainer"></div>
+        <div class="success-icon">
+            <svg viewBox="0 0 24 24">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+        </div>
+        <h3 class="success-title" id="successTitle">签到成功!</h3>
+        <p class="success-date" id="successDate"></p>
+        <p class="success-msg" id="successMsg"></p>
+        <button class="success-close-btn" id="successCloseBtn">太棒了!</button>
+    </div>
+</div>
 
 <!-- 任务弹窗 -->
 <div class="mask" id="taskMask">
@@ -323,6 +505,82 @@ const taskMask = document.getElementById("taskMask");
 const openTaskPop = document.getElementById("openTaskPop");
 const closePopBtn = document.getElementById("closePopBtn");
 
+// 签到成功弹窗元素
+const successModal = document.getElementById("successModal");
+const successTitle = document.getElementById("successTitle");
+const successDate = document.getElementById("successDate");
+const successMsg = document.getElementById("successMsg");
+const successCloseBtn = document.getElementById("successCloseBtn");
+const starsContainer = document.getElementById("starsContainer");
+
+// 签到成功提示语数组
+const successMessages = [
+    "坚持就是胜利，你做到了!",
+    "每一天的努力，都是成功的积累!",
+    "自律的人生，注定不凡!",
+    "超神之路，始于今日签到!",
+    "保持自律，你会越来越强!",
+    "今日事今日毕，真棒!",
+    "成功人士，从不懈怠!",
+    "坚持打卡，未来可期!"
+];
+
+// 显示签到成功弹窗
+function showSuccessModal(dateStr, isSigned) {
+    const modal = successModal;
+    const box = modal.querySelector('.success-box');
+    
+    // 根据签到/取消设置样式
+    if(isSigned){
+        modal.classList.remove('cancel-modal');
+        successTitle.textContent = "签到成功!";
+        successCloseBtn.textContent = "太棒了!";
+        const msgIndex = Math.floor(Math.random() * successMessages.length);
+        successMsg.textContent = successMessages[msgIndex];
+    }else{
+        modal.classList.add('cancel-modal');
+        successTitle.textContent = "已取消签到";
+        successCloseBtn.textContent = "知道了";
+        successMsg.textContent = "明天继续加油哦!";
+    }
+    
+    successDate.textContent = dateStr;
+    modal.classList.add('show');
+    
+    // 生成星星效果
+    createStars();
+    
+    // 震动反馈（如果支持）
+    if(navigator.vibrate){
+        navigator.vibrate(50);
+    }
+}
+
+// 创建星星效果
+function createStars() {
+    starsContainer.innerHTML = '';
+    for(let i = 0; i < 15; i++){
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 1 + 's';
+        starsContainer.appendChild(star);
+    }
+}
+
+// 关闭成功弹窗
+successCloseBtn.onclick = () => {
+    successModal.classList.remove('show');
+    successModal.classList.remove('cancel-modal');
+};
+successModal.onclick = (e) => {
+    if(e.target === successModal){
+        successModal.classList.remove('show');
+        successModal.classList.remove('cancel-modal');
+    }
+};
+
 // 打开弹窗
 openTaskPop.onclick = () => {
     taskMask.classList.add('show');
@@ -376,13 +634,18 @@ function renderCalendar(){
             cell.onclick = () => {
                 let signRecords = JSON.parse(localStorage.getItem(SIGN_STORAGE_KEY)) || [];
                 const index = signRecords.indexOf(dateStr);
+                let isSigned = false;
                 if(index > -1){
                     signRecords.splice(index, 1);
+                    isSigned = false;
                 }else{
                     signRecords.push(dateStr);
+                    isSigned = true;
                 }
                 localStorage.setItem(SIGN_STORAGE_KEY, JSON.stringify(signRecords));
                 renderCalendar();
+                // 显示签到成功/取消弹窗
+                showSuccessModal(dateStr, isSigned);
             };
 
             calendarWrap.appendChild(cell);
